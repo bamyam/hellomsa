@@ -4,8 +4,8 @@ var request = require('request');
 var port = 3000;
 
 var app = express();
-var client_id = 'rzatGwzzqdnC3ndBQENS';
-var client_secret = 'RYHVat7Q4P';
+var client_id = '';
+var client_secret = '';
 var state = "RAMDOM_STATE";
 var redirectURI = encodeURI("http://127.0.0.1:3000/callback/naver");
 var api_url = "";
