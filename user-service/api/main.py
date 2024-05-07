@@ -1,16 +1,11 @@
 import uvicorn
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import auth
 import database as sess
-from api.schema import pymodels as pym
-from api.models import sqlmodels as sqlm
+from api.routes import user
 
 app = FastAPI()
-
-
 
 # CORS 설정
 origins = [
@@ -26,39 +21,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 데이터베이스 세션 의존성 생성
-def get_db():
-    db = sess.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
+app.include_router(user.router)
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/users", response_model=list[pym.User])
-async def list_users(db: Session = Depends(get_db)):
-    users = db.query(sqlm.User).all()
-    return [pym.User.from_orm(u) for u in users]
-
-
-@app.post("/users", response_model=pym.User)
-async def create_user(user: pym.UserCreate, db: Session = Depends(get_db)):
-    print(user)
-    return auth.register(db, user)
-
-
-@app.post("/login", response_model=pym.Token)
-async def login_user(user: pym.UserLogin, db: Session = Depends(get_db)):
-    token = auth.authenticate(db, user)
-    if not token:
-        raise HTTPException(status_code=401, detail='로그인 실패, 아이디나 비밀번호가 틀려요!')
-    return token
 
 if __name__ == '__main__':
     sess.create_tables()
     uvicorn.run('main:app', port=8010, reload=True)
+
+
