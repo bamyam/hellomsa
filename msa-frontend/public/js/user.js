@@ -4,7 +4,7 @@ const logoutbtn = document.querySelector('#logoutbtn');
 
 const getUserInfo = async () => {
     const res = await fetch(
-        `http://127.0.0.1:8010/users`);
+        `http://54.180.109.30:8010/users`);
     if (res.ok) {
         const data = await res.json();
         return data;
@@ -59,7 +59,7 @@ regbtn.addEventListener('click', async () => {
     const name = document.querySelector('#name');
     const email = document.querySelector('#email');
 
-    const res = await fetch('http://127.0.0.1:8010/users',
+    const res = await fetch('http://54.180.109.30:8010/users',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
