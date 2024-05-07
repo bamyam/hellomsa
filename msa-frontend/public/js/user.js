@@ -2,28 +2,29 @@ const regbtn = document.querySelector('#regbtn');
 const loginbtn = document.querySelector('#loginbtn');
 const logoutbtn = document.querySelector('#logoutbtn');
 
-
 const getUserInfo = async () => {
-    const res = await fetch(`http://54.180.109.30:8010/users`)
+    const res = await fetch(
+        `http://127.0.0.1:8010/users`);
     if (res.ok) {
         const data = await res.json();
         return data;
     } else {
-        throw new Error('상품 정보 조회 실패');
+        throw new Error('사용자 정보 조회 실패!');
     }
 };
 
 const displayUserInfo = (users) => {
-    const userlist = document.querySelector('#user-list');
+    const userlist =
+        document.querySelector('#user-list');
     let html = '<ul>';
     for (const u of users) {
-        html +=`
+        html += `
             <li>
-                사용자 ID: ${u.userid},
+                사용자 아이디: ${u.userid},
                 사용자 이름: ${u.name},
                 사용자 이메일: ${u.email},
                 등록일: ${u.regdate}
-             </li>
+            </li>
         `;
     }
     html += '</ul>';
@@ -31,15 +32,14 @@ const displayUserInfo = (users) => {
 };
 
 const displayAfterLogin = () => {
-    if (localStorage.getItem('token')){
+    if (localStorage.getItem('token')) {
         logoutbtn.style.display = 'block';
         loginbtn.style.display = 'none';
         regbtn.disabled = true;
-
     }
 };
 
-// 페이지 로드 시 실행
+// 페이지 로드시 실행
 window.addEventListener('load', async () => {
     try {
         const users = await getUserInfo();
@@ -47,7 +47,7 @@ window.addEventListener('load', async () => {
         displayAfterLogin();
     } catch (e) {
         console.error(e);
-        alert('사용자 조회 실패!!');
+        alert('사용자 리스트 조회 실패!!');
     }
 });
 
@@ -62,7 +62,7 @@ regbtn.addEventListener('click', async () => {
     const res = await fetch('http://127.0.0.1:8010/users',
         {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userid: userid.value,
                 passwd: passwd.value,
@@ -73,30 +73,23 @@ regbtn.addEventListener('click', async () => {
 
     const data = await res.json();
     if (res.ok) {
-        alert('회원등록 성공!');
+        alert('회원등록 성공!!');
     } else {
-        alert('회원등록 실패');
+        alert('회원등록실패!!');
         console.log(data.detail);
     }
-})
+});
 
+// 로그인버튼 이벤트 추가
 loginbtn.addEventListener('click', async () => {
     const loginfrm = document.querySelector('#loginfrm');
     const userid = document.querySelector('#uid');
     const passwd = document.querySelector('#pwd');
 
-    let dd = JSON.stringify({
-        userid: userid.value,
-        name: name.value,
-        email: email.value,
-        passwd: passwd.value
-    })
-    console.log(dd)
-
-    const res = await fetch('http://54.180.109.30:8010/login',
+    const res = await fetch('http://127.0.0.1:8010/login',
         {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userid: userid.value,
                 passwd: passwd.value
@@ -106,11 +99,11 @@ loginbtn.addEventListener('click', async () => {
     const data = await res.json();
     if (res.ok) {
         console.log(data.access_token);
-        localStorage.setItem('token', data.access_token)
-        alert('로그인 성공!');
+        localStorage.setItem('token', data.access_token);
+        alert('로그인 성공!!');
         location.href = '/user.html';
     } else {
-        alert('로그인 실패');
+        alert('로그인 실패!!');
         console.log(data.detail);
     }
 });
@@ -118,4 +111,8 @@ loginbtn.addEventListener('click', async () => {
 logoutbtn.addEventListener('click', () => {
     localStorage.removeItem('token');
     location.href = '/user.html';
-})
+});
+
+
+
+
